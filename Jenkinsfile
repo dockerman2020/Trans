@@ -43,24 +43,24 @@ spec:
 // tools {
 //         jdk 'java17'
 //     }
-// environment {
-//     APP_NAME = "cms-django"
-//     RELEASE = "1.0.0"
-//     DOCKER_USER = "dockerman2002"
-//     DOCKER_PASS = 'dockerhub'
-//     IMAGE_NAME = "${DOCKER_USER}" + "/" + "${APP_NAME}"
-//     IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
-//     CMS_API_TOKEN = credentials('CMS_API_TOKEN')
-//     TRIVY_API_TOKEN = credentials('trivy-token')
-//     TRIVY_SERVER = "trivy.trivy-redis.svc.cluster.local"
-//     JENKINS_URL = "jenkins.jenkins.svc.cluster.local"
-//     TRIVY_PORT = "4954"
-//     SONAR_CMS = credentials('jenkins-sonar-cms')
-//     SLACK_BOT_TOKEN = credentials('SLACK_BOT_TOKEN')
-//     SLACK_CHANNEL_ID = credentials('SLACK_CHANNEL_ID')
-//     SONARQUBE_HOME = tool 'sonarqube-scanner'
-//     GIT_BRANCH = "feature/test01"
-//     }
+environment {
+    APP_NAME = "cms-django"
+    RELEASE = "1.0.0"
+    DOCKER_USER = "dockerman2002"
+    DOCKER_PASS = 'dockerhub'
+    IMAGE_NAME = "${DOCKER_USER}" + "/" + "${APP_NAME}"
+    IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
+    CMS_API_TOKEN = credentials('CMS_API_TOKEN')
+    TRIVY_API_TOKEN = credentials('trivy-token')
+    TRIVY_SERVER = "trivy.trivy-redis.svc.cluster.local"
+    JENKINS_URL = "jenkins.jenkins.svc.cluster.local"
+    TRIVY_PORT = "4954"
+    SONAR_CMS = credentials('jenkins-sonar-cms')
+    SLACK_BOT_TOKEN = credentials('SLACK_BOT_TOKEN')
+    SLACK_CHANNEL_ID = credentials('SLACK_CHANNEL_ID')
+    SONARQUBE_HOME = tool 'sonarqube-scanner'
+    GIT_BRANCH = "feature/test01"
+    }
 options {
   buildDiscarder logRotator(artifactDaysToKeepStr: '5', artifactNumToKeepStr: '2', daysToKeepStr: '5', numToKeepStr: '3')
     }
