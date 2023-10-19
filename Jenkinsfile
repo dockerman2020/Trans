@@ -73,7 +73,8 @@ options {
     stage("Checkout from SCM"){
         steps {
             container('cms-docker') {
-            git branch: "${GIT_BRANCH}", url: 'https://github.com/dockerman2020/Trans.git'
+            // git branch: "${GIT_BRANCH}", url: 'https://github.com/dockerman2020/Trans.git'
+            checkout poll: false, scm: scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/dockerman2020/Trans.git']])
             }
         }
     }
