@@ -83,11 +83,9 @@ options {
           container('cms-docker') {
           sh '''
           #!/bin/bash
-          pwd
-          ls -lrt
-          export yamlfile="myyaml.yaml"
-          export IND=$(awk -F':' '/^    jkcd/{print $1}' $yamlfile)
-          export INDv=$(awk -F':' '/^    jkcd/{print $2}' $yamlfile)
+          declare -x yamlfile="myyaml.yaml"
+          declare -x IND=$(awk -F':' '/^    jkcd/{print $1}' $yamlfile)
+          declare -x INDv=$(awk -F':' '/^    jkcd/{print $2}' $yamlfile)
 
           awk -v JK="$IND" -v JKv="$INDv" '
           $0 ~ JK ": " JKv {
@@ -96,7 +94,8 @@ options {
           next
           }
           { print }
-          ' $yamlfile
+          ' $yamlfile > tempfile.yaml
+          cat tempfile.yaml
           '''
         }
       }
