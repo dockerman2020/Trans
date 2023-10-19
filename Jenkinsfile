@@ -70,6 +70,7 @@ options {
                 cleanWs()
             }
         }
+  
         stage("Checkout from SCM"){
             steps {
                 container('cms-docker') {
@@ -77,8 +78,9 @@ options {
                 }
             }
         }
+
         stage("Transform Yaml"){
-	    steps {
+	          steps {
                 container('cms-docker') {
                 sh '''
                 #!/bin/bash
@@ -96,4 +98,7 @@ options {
                { print }
                ' $yamlfile
                '''
+             }
     }
+  }
+}
