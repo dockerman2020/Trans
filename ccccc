@@ -1,0 +1,225 @@
+def command = "awk -F\":\" '/^    jkcd/{print \$1}' myyaml.yaml"
+def process = command.execute()
+process.waitFor()
+
+// Check if the command was successful
+if (process.exitValue() == 0) {
+    // Get the output of the command
+    def jkcd = process.text.trim()
+
+    // Use the value in your Groovy script
+    def DDD = "Value based on jkcd: $jkcd"
+
+    println DDD
+} else {
+    // Handle the case where the command failed
+    println "Error executing command: $command"
+    println "Exit code: ${process.exitValue()}"
+    println "Error output: ${process.err.text}"
+}
+I have a dsl.sh statement that gets run in a Jenkins pipeline:
+dsl.sh """
+export DDD=`awk -F\":\" '^    jkcd/{print \$1}' myyaml.yaml`
+export DDv=`awk -F\":\" '^    jkcd/{print \$2}' myyaml.yaml`
+awk -v JK=\"\$DDD\" -v JKv=\"\$DDv\" '\$1 ~ JK {print;print JK\"-1: "JKv;next}1' myyaml.yaml
+"""
+
+
+
+The variables are not substituted in the pattern match and print statements. How do I correct this?
+
+In Groovy's triple-double-quoted strings (`"""`), variable substitution is allowed. However, when you're using shell commands within that string, you need to be careful about the interpretation of the dollar signs (`$`). In Groovy strings, `$` is a special character, and if you want to include a literal `$` in your shell command, you need to escape it as `\$`. 
+
+Here's how you can modify your script:
+JK and JKv are not getting expanded in the awk statement.
+```groovy
+dsl.sh """
+export DDD=\$(awk -F\":\" '/^    jkcd/{print \$1}' myyaml.yaml)
+export DDv=\$(awk -F\":\" '/^    jkcd/{print \$2}' myyaml.yaml)
+awk -v JK="\$DDD" -v JKv="\$DDv" '\$1 ~ JK {print;print JK\"-1: "JKv;next}1' myyaml.yaml
+"""
+```
+What I get is:
+awk -v 'JK=JK-value' -v 'JKv=JKv-value' '$1 ~ JK {print;print JK\"-1: "JKv;next}1' myyaml.yaml
+
+The result I expect is:
+awk -v 'JK=JK-value' -v 'JKv=JKv-value' '$1 ~ JK {print;print JK-value-1: JKv-value;next}1' myyaml.yaml
+
+How do I rewrite this code to achieve my expected result?
+
+This way, the shell command within the `dsl.sh` block will correctly interpret the `$` symbols. 
+
+Also, note that `export DDD=\$()` is used to capture the output of the `awk` command and assign it to the `DDD` variable. Similarly for `DDv`.
+
+
+
+
+
+
+
+
+If you're having trouble with variable substitution in your Groovy script, you might want to directly interpolate the Groovy variables into the script string using Groovy's string interpolation. Here's how you can modify your script:
+
+```groovy
+def script = """
+export DDD=\$(awk -F\":\" '/^    jkcd/{print \$1}' myyaml.yaml)
+export DDv=\$(awk -F\":\" '/^    jkcd/{print \$2}' myyaml.yaml)
+awk -v JK="\$DDD" -v JKv="\$DDv" '\$1 ~ JK {print;print JK-1: "JKv;next}1' myyaml.yaml
+"""
+
+sh script
+```
+
+In this version, I've used triple-double-quoted strings (`"""`) to create a multi-line string in Groovy. Inside this string, you can directly reference Groovy variables without escaping. When you execute this script using `sh script`, Groovy will interpolate the variables, and the resulting shell script should have the correct values.
+
+Make sure to adjust the syntax of your `awk` statement based on your intended behavior. If you want to subtract 1 from `JK` in the print statement, you might want to change `print JK-1` to `print JK - 1`.
+
+
+
+=====================================
+In a Jenkins pipeline script using Groovy, you can use the following steps to achieve this:
+
+1. Read the YAML file.
+2. Modify the YAML data.
+3. Write the updated YAML data back to the file.
+
+Here is an example Jenkins pipeline script that accomplishes this:
+
+pipeline {
+    agent any
+    
+    stages {
+        stage('Modify YAML File') {
+            steps {
+                script {
+                    def yamlFile = 'MyFile.yaml'
+
+                    // Read YAML file
+                    def yamlData = readYaml file: yamlFile
+
+                    // Modify the YAML data
+                    yamlData.app.noncommittal.jkcd-1 = '40976329-aaaa-444-kk'
+                    yamlData.app.committal.njkcd-1 = '40976329-aaaa-444-kk'
+
+                    // Write updated YAML data back to the file
+                    writeYaml file: yamlFile, data: yamlData
+                }
+            }
+        }
+    }
+}
+
+This script uses the `readYaml` step to read the YAML file, modifies the data as needed, and then uses the `writeYaml` step to write the updated data back to the file.
+
+
+
+
+
+
+
+
+To achieve this in a Jenkins pipeline using Groovy, you can use the following script:
+
+```groovy
+pipeline {
+    agent any
+    
+    stages {
+        stage('Modify YAML File') {
+            steps {
+                script {
+                    def yamlFile = 'MyFile.yaml'
+
+                    // Read YAML file
+                    def yamlData = readYaml file: yamlFile
+
+                    // Modify the YAML data
+                    yamlData.app.noncommittal.'jkcd-1' = yamlData.app.noncommittal.'Jkcd-in'
+                    yamlData.app.noncommittal.remove('Jkcd-in')
+
+                    yamlData.app.committal.'njkcd-1' = yamlData.app.committal.'njkcd-in'
+                    yamlData.app.committal.remove('njkcd-in')
+
+                    // Write updated YAML data back to the file
+                    writeYaml file: yamlFile, data: yamlData
+                }
+            }
+        }
+    }
+}
+```
+
+This script does the following:
+
+1. Reads the YAML file.
+2. Modifies the data by copying the values from the existing keys to the new keys (`jkcd-1` and `njkcd-1`), and then removes the old keys (`Jkcd-in` and `njkcd-in`).
+3. Writes the updated YAML data back to the file.
+
+Make sure to replace `'MyFile.yaml'` with the actual path to your YAML file. Adjust the script according to your specific YAML structure and requirements. This script assumes that the structure of your YAML remains the same, and it adds new entries with keys `jkcd-1` and `njkcd-1` while removing the existing entries with keys `Jkcd-in` and `njkcd-in`.
+
+
+
+
+I apologize for the confusion. The error you're encountering may be due to the fact that the `remove` method might not be directly available for the `noncommittal` and `committal` maps. Let's use a different approach to achieve the same result:
+
+```groovy
+pipeline {
+    agent any
+    
+    stages {
+        stage('Modify YAML File') {
+            steps {
+                script {
+                    def yamlFile = 'MyFile.yaml'
+
+                    // Read YAML file
+                    def yamlData = readYaml file: yamlFile
+
+                    // Modify the YAML data
+                    yamlData.app.noncommittal['jkcd-1'] = yamlData.app.noncommittal['Jkcd-in']
+                    yamlData.app.noncommittal.remove('Jkcd-in')
+
+                    yamlData.app.committal['njkcd-1'] = yamlData.app.committal['njkcd-in']
+                    yamlData.app.committal.remove('njkcd-in')
+
+                    // Write updated YAML data back to the file
+                    writeYaml file: yamlFile, data: yamlData
+                }
+            }
+        }
+    }
+}
+```
+
+In this version, I replaced the dot notation with square brackets to access the map elements. This should work for both adding the new entries and removing the old ones. Please try running the modified script, and it should handle the YAML modifications correctly.
+Make sure to replace `'MyFile.yaml'` with the actual path to your YAML file. This script assumes that the YAML structure remains the same, and you're adding new entries with the keys `jkcd-1` and `njkcd-1` respectively. Adjust the script according to your specific YAML structure and requirements
+
+===================================================
+
+    stages {
+        stage('Modify YAML File') {
+            steps {
+                script {
+                    def yamlFile = 'MyFile.yaml'
+
+                    // Read YAML file
+                    def yamlData = readYaml file: yamlFile
+
+                    // Retrieve values for AAA and BBB from the YAML data
+                    def AAA = yamlData.apps.committal.'Jkcd-in'
+                    def BBB = yamlData.apps.'non-commital'.'njkcd-in'
+
+                    // Modify the YAML data
+                    yamlData.apps.committal['jkcd-1'] = AAA
+                    yamlData.apps.committal.remove('Jkcd-in')
+
+                    yamlData.apps.'non-commital'.'njkcd-1' = BBB
+                    yamlData.apps.'non-commital'.remove('njkcd-in')
+
+                    // Write updated YAML data back to the file
+                    writeYaml file: yamlFile, data: yamlData
+                }
+            }
+        }
+    }
+}
