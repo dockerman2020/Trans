@@ -83,7 +83,7 @@ options {
                 sh '''
                 #!/bin/bash
 
-                export yamlfile="MyFile.yaml"
+                export yamlfile="myyaml.yaml"
                 export IND=$(awk -F':' '/^    jkcd/{print $1}' $yamlfile)
                 export INDv=$(awk -F':' '/^    jkcd/{print $2}' $yamlfile)
 
@@ -95,4 +95,5 @@ options {
                }
                { print }
                ' $yamlfile
+               '''
     }
