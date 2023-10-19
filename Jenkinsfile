@@ -64,41 +64,40 @@ environment {
 options {
   buildDiscarder logRotator(artifactDaysToKeepStr: '5', artifactNumToKeepStr: '2', daysToKeepStr: '5', numToKeepStr: '3')
     }
-    stages {
-        stage("Cleanup Workspace"){
-            steps {
-                cleanWs()
+  stages {
+    stage("Cleanup Workspace"){
+        steps {
+            cleanWs()
+        }
+    }
+    stage("Checkout from SCM"){
+        steps {
+            container('cms-docker') {
+            git branch: "${GIT_BRANCH}", credentialsId: 'cms', url: 'https://github.com/dockerman2020/cms.git'
             }
         }
-  
-        stage("Checkout from SCM"){
-            steps {
-                container('cms-docker') {
-                git branch: "${GIT_BRANCH}", credentialsId: 'cms', url: 'https://github.com/dockerman2020/cms.git'
-                }
-            }
+    }
+    stage("Transform Yaml"){
+        steps {
+          container('cms-docker') {
+          sh '''
+          #!/bin/bash
+
+          export yamlfile="myyaml.yaml"
+          export IND=$(awk -F':' '/^    jkcd/{print $1}' $yamlfile)
+          export INDv=$(awk -F':' '/^    jkcd/{print $2}' $yamlfile)
+
+          awk -v JK="$IND" -v JKv="$INDv" '
+          $0 ~ JK ": " JKv {
+          print
+          print JK "-1: " JKv
+          next
+          }
+          { print }
+          ' $yamlfile
+          '''
         }
-
-        stage("Transform Yaml"){
-	          steps {
-                container('cms-docker') {
-                sh '''
-                #!/bin/bash
-
-                export yamlfile="myyaml.yaml"
-                export IND=$(awk -F':' '/^    jkcd/{print $1}' $yamlfile)
-                export INDv=$(awk -F':' '/^    jkcd/{print $2}' $yamlfile)
-
-               awk -v JK="$IND" -v JKv="$INDv" '
-               $0 ~ JK ": " JKv {
-               print
-               print JK "-1: " JKv
-               next
-               }
-               { print }
-               ' $yamlfile
-               '''
-             }
+      }
     }
   }
 }
