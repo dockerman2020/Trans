@@ -73,7 +73,7 @@ options {
     stage("Checkout from SCM"){
         steps {
             container('cms-docker') {
-            git branch: "${GIT_BRANCH}", credentialsId: 'cms', url: 'https://github.com/dockerman2020/cms.git'
+            git branch: "${GIT_BRANCH}", url: 'https://github.com/dockerman2020/Trans.git'
             }
         }
     }
