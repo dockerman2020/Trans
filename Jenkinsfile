@@ -100,5 +100,19 @@ options {
         }
       }
     }
-  }
+    stage('Modify YAML') {
+        steps {
+            script {
+                // Define the variables AAA and BBB
+                def AAA = '40976329-aaaa-444-kk'
+                def BBB = '40976329-bbbb-444-kk'
+
+                // Modify the YAML file
+                sh """
+                    sed -i '/jkcd-in:/a \ \ \ \ jkcd-1: ${AAA}' myyaml.yaml
+                    sed -i '/njkcd-in:/a \ \ \ \ njkcd-1: ${BBB}'myyaml.yaml
+                """
+            }
+        }
+    }
 }
