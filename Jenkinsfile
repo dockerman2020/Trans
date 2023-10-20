@@ -110,7 +110,9 @@ options {
                 // Modify the YAML file
                 sh """
                     sed -i '/jkcd-in:/a \\ \\ \\ \\ jkcd-1: ${AAA}' myyaml.yaml
+                    cat myyaml.yaml
                     sed -i '/njkcd-in:/a \\ \\ \\ \\ njkcd-1: ${BBB}' myyaml.yaml
+                    cat myyaml.yaml
                 """
             }
         }
