@@ -100,7 +100,7 @@ options {
           { print }
           ' $yamlfile > tempfile.yaml
           cat tempfile.yaml
-          awk -v JK="$IND" -v JKv="$SINDv" '$0 ~ JK {print;print JK"-1: " JKv; next}1' $yamlfile > tempfile2.yaml
+          awk -v JK="$IND" -v JKv="$INDv" '$0 ~ JK {print;print JK"-1: " JKv; next}1' $yamlfile > tempfile2.yaml
           cat tempfile2.yaml
           '''
         }
