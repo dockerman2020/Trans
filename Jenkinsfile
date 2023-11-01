@@ -61,6 +61,10 @@ spec:
 //     SONARQUBE_HOME = tool 'sonarqube-scanner'
 //     GIT_BRANCH = "feature/test01"
 //     }
+environment {
+    AAA = '40976329-aaaa-444-kk'
+    BBB = '40976329-bbbb-444-kk'
+}
 options {
   buildDiscarder logRotator(artifactDaysToKeepStr: '5', artifactNumToKeepStr: '2', daysToKeepStr: '5', numToKeepStr: '3')
     }
@@ -118,4 +122,24 @@ options {
         }
     }
  }
+    stage('Modify GG YAML') {
+        steps {
+                script {
+                def yamlFile = 'MyFile.yaml'
+
+                // Read YAML file
+                def yamlData = readYaml file: yamlFile
+
+                // Modify the YAML data
+                yamlData.apps.committal['jkcd-in-1'] = AAA
+                yamlData.apps.committal.remove('Jkcd-in')
+
+                yamlData.apps.'non-commital'.'njkcd-in-1' = BBB
+                yamlData.apps.'non-commital'.remove('njkcd-in')
+
+                // Write updated YAML data back to the file
+                writeYaml file: yamlFile, data: yamlData
+            }
+        }
+    }
 }

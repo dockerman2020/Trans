@@ -223,3 +223,114 @@ Make sure to replace `'MyFile.yaml'` with the actual path to your YAML file. Thi
         }
     }
 }
+
+
+
+To incorporate your logic into a Kubernetes deployment, you can do so by adding an `initContainer` that performs these tasks. An `initContainer` is a separate container that runs before the main containers in a Pod.
+
+Here's an example YAML snippet for a Kubernetes Deployment with an `initContainer`:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: your-deployment
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: your-app
+    spec:
+      initContainers:
+      - name: init-container
+        image: your-image
+        command:
+        - "/bin/sh"
+        - "-c"
+        - |
+          NODE=$(uname -n | cut -d'-' -f1-4)
+          if [ "$NODE" = "abc-efd-hij-in" ]; then
+            sed 's/ACDEDD/98765/g' /etc/fav/battery/XIV.xml > /etc/fav/battery/XIV-1.xml
+            cp /etc/fav/battery/XIV-1.xml /etc/fav/battery/XIV.xml
+          fi
+      containers:
+      - name: your-container
+        image: your-app-image
+        # your container configuration here
+```
+
+In this example:
+
+- `init-container` runs the `uname` and `sed` commands based on your logic.
+- If the condition is met, the `initContainer` modifies the XML file and copies it back.
+- The main container (`your-container`) starts after the `init-container` completes.
+
+Make sure to replace `your-image` with the appropriate image for your init container, and adjust other parts of the YAML according to your deployment needs.
+
+
+
+
+In Kubernetes, `initContainers` in a Pod are executed in order, one after the other, in the sequence in which they are defined in the YAML file. Here's an example:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: your-pod
+spec:
+  containers:
+  - name: your-container
+    image: your-app-image
+    # your container configuration here
+  initContainers:
+  - name: init-container-1
+    image: your-init-container-image-1
+    command: ["/bin/sh", "-c", "echo 'Init Container 1'"]
+  - name: init-container-2
+    image: your-init-container-image-2
+    command: ["/bin/sh", "-c", "echo 'Init Container 2'"]
+```
+
+In this example, `init-container-1` will run first, followed by `init-container-2`. The init containers are executed one by one, and each must complete successfully before the next one starts. If any init container fails, the Pod restarts the initialization process.
+
+Ensure that the `command` field in your `initContainers` specifies how your commands should be executed within each init container. The above example demonstrates a simple echo command; replace it with your actual logic.
+o
+
+
+
+
+
+
+===================================================================
+pipeline {
+    agent any
+    
+    environment {
+        AAA = '40976329-aaaa-444-kk'
+        BBB = '40976329-bbbb-444-kk'
+    }
+
+    stages {
+        stage('Modify YAML File') {
+            steps {
+                script {
+                    def yamlFile = 'MyFile.yaml'
+
+                    // Read YAML file
+                    def yamlData = readYaml file: yamlFile
+
+                    // Modify the YAML data
+                    yamlData.apps.committal['jkcd-in-1'] = AAA
+                    yamlData.apps.committal.remove('Jkcd-in')
+
+                    yamlData.apps.'non-commital'.'njkcd-in-1' = BBB
+                    yamlData.apps.'non-commital'.remove('njkcd-in')
+
+                    // Write updated YAML data back to the file
+                    writeYaml file: yamlFile, data: yamlData
+                }
+            }
+        }
+    }
+}
