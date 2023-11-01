@@ -129,7 +129,7 @@ options {
                 def yamlFile = 'Myyaml.yaml'
 
                 // Read YAML file
-                def yamlData = readYaml file: yamlFile
+                def yamlData = dsl.readYaml file: yamlFile
 
                 // Modify the YAML data
                 yamlData.apps.committal['jkcd-in-1'] = AAA
