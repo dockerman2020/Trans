@@ -113,10 +113,12 @@ options {
 
                 // Modify the YAML file
                 sh """
+                    cp myyaml.yaml Myyaml.yaml
                     sed -i '/jkcd-in:/a \\ \\ \\ \\ jkcd-1: ${AAA}' myyaml.yaml
                     cat myyaml.yaml
                     sed -i '/njkcd-in:/a \\ \\ \\ \\ njkcd-1: ${BBB}' myyaml.yaml
                     cat myyaml.yaml
+
                 """
             }
         }
@@ -124,7 +126,7 @@ options {
     stage('Modify GG YAML') {
         steps {
                 script {
-                def yamlFile = 'MyFile.yaml'
+                def yamlFile = 'Myyaml.yaml'
 
                 // Read YAML file
                 def yamlData = readYaml file: yamlFile
@@ -138,6 +140,8 @@ options {
 
                 // Write updated YAML data back to the file
                 writeYaml file: yamlFile, data: yamlData
+
+                sh "cat Myyaml.yaml"
                 }
             }
         }
