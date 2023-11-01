@@ -114,9 +114,9 @@ options {
                 // Modify the YAML file
                 sh """
                     cp myyaml.yaml Myyaml.yaml
-                    sed -i '/jkcd-in:/a \\ \\ \\ \\ jkcd-1: ${AAA}' myyaml-1.yaml
+                    sed -i '/jkcd-in:/a \\ \\ \\ \\ jkcd-in-1: ${AAA}' myyaml-1.yaml
                     cat myyaml-1.yaml
-                    sed -i '/njkcd-in:/a \\ \\ \\ \\ njkcd-1: ${BBB}' myyaml-1.yaml
+                    sed -i '/njkcd-in:/a \\ \\ \\ \\ njkcd-in-1: ${BBB}' myyaml-1.yaml
                     cat myyaml-1.yaml
                 """
             }
