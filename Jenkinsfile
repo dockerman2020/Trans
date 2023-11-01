@@ -87,9 +87,9 @@ options {
           container('cms-docker') {
           sh '''
           #!/bin/bash
-          export yamlfile="myyaml.yaml"
-          export IND=$(awk -F':' '/^    jkcd/{print $1}' $yamlfile)
-          export INDv=$(awk -F':' '/^    jkcd/{print $2}' $yamlfile)
+          export yamlfile="myyaml-1.yaml"
+          export IND=$(awk -F':' '/^    jkcd-in/{print $1}' $yamlfile)
+          export INDv=$(awk -F':' '/^    jkcd-in/{print $2}' $yamlfile)
 
           awk -v JK="$IND" -v JKv="$INDv" '
           $0 ~ JK ": " JKv {
@@ -122,27 +122,27 @@ options {
             }
         }
     }
-    stage('Modify GG YAML') {
-        steps {
-                script {
-                def yamlFile = 'Myyaml.yaml'
+    // stage('Modify GG YAML') {
+    //     steps {
+    //             script {
+    //             def yamlFile = 'Myyaml.yaml'
 
-                // Read YAML file
-                def yamlData = dsl.readYaml file: yamlFile
+    //             // Read YAML file
+    //             def yamlData = dsl.readYaml file: yamlFile
 
-                // Modify the YAML data
-                yamlData.apps.committal['jkcd-in-1'] = AAA
-                yamlData.apps.committal.remove('Jkcd-in')
+    //             // Modify the YAML data
+    //             yamlData.apps.committal['jkcd-in-1'] = AAA
+    //             yamlData.apps.committal.remove('Jkcd-in')
 
-                yamlData.apps.'non-commital'.'njkcd-in-1' = BBB
-                yamlData.apps.'non-commital'.remove('njkcd-in')
+    //             yamlData.apps.'non-commital'.'njkcd-in-1' = BBB
+    //             yamlData.apps.'non-commital'.remove('njkcd-in')
 
-                // Write updated YAML data back to the file
-                writeYaml file: yamlFile, data: yamlData
+    //             // Write updated YAML data back to the file
+    //             writeYaml file: yamlFile, data: yamlData
 
-                sh "cat Myyaml.yaml"
-                }
-            }
-        }
+    //             sh "cat Myyaml.yaml"
+    //             }
+    //         }
+    //     }
     }
 }
