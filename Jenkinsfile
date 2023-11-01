@@ -64,7 +64,7 @@ spec:
 environment {
     AAA = '40976329-aaaa-444-kk'
     BBB = '40976329-bbbb-444-kk'
-}
+    }
 options {
   buildDiscarder logRotator(artifactDaysToKeepStr: '5', artifactNumToKeepStr: '2', daysToKeepStr: '5', numToKeepStr: '3')
     }
@@ -121,7 +121,6 @@ options {
             }
         }
     }
- }
     stage('Modify GG YAML') {
         steps {
                 script {
@@ -139,6 +138,7 @@ options {
 
                 // Write updated YAML data back to the file
                 writeYaml file: yamlFile, data: yamlData
+                }
             }
         }
     }
