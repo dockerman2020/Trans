@@ -85,7 +85,7 @@ options {
     stage("Transform Yaml"){
         steps {
           container('cms-docker') {
-          sh """
+          sh '''
           #!/bin/bash
           export yamlfile="myyaml-1.yaml"
           export IND=$(awk -F':' '/^    jkcd-in/{print $1}' $yamlfile)
@@ -102,7 +102,7 @@ options {
           cat tempfile.yaml
           awk -v JK="$IND" -v JKv="$SINDv" '$0 ~ JK {print;print JK"-1: " JKv; next}1' $yamlfile > tempfile2.yaml
           cat tempfile2.yaml
-          """
+          '''
         }
       }
     }
