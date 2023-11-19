@@ -1,12 +1,12 @@
 Config: feature/abcd
 
 app:
-  noncommittal:
+  commital:
     abcd: 4444999-aaaa-444-kk
     a12d: 4444339-aaaa-944-kk
     jkcd-in: 40976329-aaaa-444-kk
     xfgd: 44434999-aaaa-221-kk
     zasd: 44434999-bcde-221-kk
-  commital:
+  non-commital:
     nzasd: 44434999-aaaa-221-kk
     njkcd-in: 40976329-aaaa-444-kk
