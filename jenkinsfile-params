@@ -1,0 +1,55 @@
+@Library('absiSharedLib') _
+
+pipeline {
+	agent {
+        kubernetes {
+            cloud 'kubernetes'
+            idleMinutes 5
+            namespace 'jenkins-worker'
+            yaml '''
+                apiVersion: v1
+                kind: Pod
+                spec:
+                    containers:
+                    - name: e2e-docker
+                      image: dockerman2002/e2e-jq:v1.0.2
+                      command:
+                      - cat
+                      tty: true
+                      volumeMounts:
+                      - name: docker-socket
+                        mountPath: /var/run/docker.sock
+                    volumes:
+                    - name: docker-socket
+                      hostPath:
+                        path: /var/run/docker.sock
+                        type: Socket
+            '''
+        }
+    }
+
+   stages {
+        stage('Your Stage Name') {
+            parameters {
+                choice choices: ['import', 'export'], description: 'Import versus Export', name: 'Mode'
+                choice choices: ['development', 'preprod', 'live'], description: 'Specify env', name: 'Environment'
+                choice choices: ['ods', 'warehouse', 'ods2'], description: 'Specify Database', name: 'Database'
+                string defaultValue: '\' \'', description: 'Specify table', name: 'table-schema', trim: true
+            }
+
+            steps {
+                script {
+                    // Accessing parameters in the Groovy script
+                    def mode = params.Mode
+                    def environment = params.Environment
+                    def database = params.Database
+                    def tableSchema = params['table-schema']
+
+                    // Now you can pass these values to your Groovy class or perform any actions
+                    // For example, if you have a Groovy class named YourGroovyClass, you can do something like this:
+                    YourGroovyClass.process(mode, environment, database, tableSchema)
+                }
+            }
+        }
+    }
+}
