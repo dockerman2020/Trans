@@ -1,4 +1,4 @@
-@Library('absiSharedLib@1.0') _
+@Library('absiSharedLib@276ff471b7e75719c8666915884817843cac917e') _
 
 pipeline {
     agent any
