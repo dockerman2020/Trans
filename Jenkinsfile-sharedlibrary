@@ -1,0 +1,16 @@
+@Library('absiSharedLib') _
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Example Stage') {
+            steps {
+                script {
+                    // Call the function from the shared library
+                    your.helloWorld()
+                }
+            }
+        }
+    }
+}
