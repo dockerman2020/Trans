@@ -46,7 +46,7 @@ pipeline {
 
                     // Now you can pass these values to your Groovy class or perform any actions
                     // For example, if you have a Groovy class named YourGroovyClass, you can do something like this:
-                    testPara.context(mode, environment, database, tableSchema)
+                    testPara.process(mode, environment, database, tableSchema)
                 }
             }
         }
