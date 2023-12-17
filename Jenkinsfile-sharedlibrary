@@ -33,7 +33,7 @@ pipeline {
             steps {
                 script {
                     // Call the function from the shared library
-                    helloWorld(Ikpemosi, Sunday)
+                    helloWorld(name: "Ikpemosi", dayOfWeek: "Sunday")
                 }
             }
         }
