@@ -27,9 +27,6 @@ pipeline {
             '''
         }
     }
-
-   stages {
-        stage('Your Stage Name') {
             parameters {
                 choice choices: ['import', 'export'], description: 'Import versus Export', name: 'Mode'
                 choice choices: ['development', 'preprod', 'live'], description: 'Specify env', name: 'Environment'
@@ -37,6 +34,8 @@ pipeline {
                 string defaultValue: '\' \'', description: 'Specify table', name: 'table-schema', trim: true
             }
 
+   stages {
+        stage('Your Stage Name') {
             steps {
                 script {
                     // Accessing parameters in the Groovy script
