@@ -28,6 +28,17 @@ pipeline {
         }
     }
 
+    checkout([
+    $class: 'GitSCM',
+    branches: [[name: '*/main']],
+    doGenerateSubmoduleConfigurations: false,
+    extensions: [
+        [$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [[path: 'src/']]] // Include only 'src/' directory
+    ],
+    submoduleCfg: [],
+    userRemoteConfigs: [[url: 'your-repository-url']]
+])
+
     stages {
         stage('Example Stage') {
             steps {
