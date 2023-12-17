@@ -1,4 +1,5 @@
 @Library('absiSharedLib') _
+import src.absi.test
 
 pipeline {
 	agent {
@@ -33,7 +34,7 @@ pipeline {
             steps {
                 script {
                     // Call the function from the shared library
-                    src.absi.test.helloWorld.run()
+                    helloWorld.run()
                 }
             }
         }
