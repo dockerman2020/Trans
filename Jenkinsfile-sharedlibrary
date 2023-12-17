@@ -33,7 +33,7 @@ pipeline {
             steps {
                 script {
                     // Call the function from the shared library
-                    helloWorld.call()
+                    src.absi.test.testHelloWorld.helloWorld()
                 }
             }
         }
